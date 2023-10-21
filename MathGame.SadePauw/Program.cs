@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace MathGame.SadePauw
 {
@@ -15,7 +16,8 @@ namespace MathGame.SadePauw
             var date = DateTime.Now;
 
             string input;
-            Console.WriteLine($"Hello {name}, welcome to my Math Game!" +
+            Console.Clear();
+            Console.WriteLine($"Hello {name}, welcome to my Math Game!\n" +
                               "\nYou can enter 'Q' at any time to leave.");
             do
             {
@@ -26,6 +28,12 @@ namespace MathGame.SadePauw
                                   "\n\nH = History " + " Q = Quit ");
                 input = Console.ReadLine()?.ToUpper();
 
+                if (!IsValidInput(input))
+                {
+                    Console.WriteLine("\nInvalid input. Please enter one of the specified characters.\n");
+                    continue;
+                }
+                Console.Clear();
                 GameSelection(input, name, date);
             } while (input != "Q");
         }
@@ -57,7 +65,7 @@ namespace MathGame.SadePauw
                             currentStreak++;
                         }
                     }
-                    EndGame(name, date, startTime, currentStreak, difficulty);
+                    EndGame(name, date, startTime, currentStreak, difficulty, "Add");
                     break;
                 case "S":
                     difficulty = SelectDifficulty();
@@ -79,7 +87,7 @@ namespace MathGame.SadePauw
                             currentStreak++;
                         }
                     }
-                    EndGame(name, date, startTime, currentStreak, difficulty);
+                    EndGame(name, date, startTime, currentStreak, difficulty, "Subtract");
                     break;
                 case "M":
                     difficulty = SelectDifficulty();
@@ -101,7 +109,7 @@ namespace MathGame.SadePauw
                             currentStreak++;
                         }
                     }
-                    EndGame(name, date, startTime, currentStreak, difficulty);
+                    EndGame(name, date, startTime, currentStreak, difficulty, "Multiply");
                     break;
                 case "D":
                     difficulty = SelectDifficulty();
@@ -123,7 +131,7 @@ namespace MathGame.SadePauw
                             currentStreak++;
                         }
                     }
-                    EndGame(name, date, startTime, currentStreak, difficulty);
+                    EndGame(name, date, startTime, currentStreak, difficulty, "Divide");
                     break;
                 case "R":
                     difficulty = SelectDifficulty();
@@ -145,7 +153,7 @@ namespace MathGame.SadePauw
                             currentStreak++;
                         }
                     }
-                    EndGame(name, date, startTime, currentStreak, difficulty);
+                    EndGame(name, date, startTime, currentStreak, difficulty, "Random");
                     break;
                 case "H":
                     if (History.GetHistory().Count < 1)
@@ -153,12 +161,10 @@ namespace MathGame.SadePauw
                         Console.WriteLine("\nNo history found!\n");
                         break;
                     }
-                    Console.WriteLine("\n");
                     foreach (var record in History.GetHistory())
                     {
-                        Console.WriteLine(record);
+                        Console.WriteLine($"{record}\n");
                     }
-                    Console.WriteLine("\n");
                     break;
                 case "Q":
                     Environment.Exit(0);
@@ -182,14 +188,17 @@ namespace MathGame.SadePauw
                 {
                     if (number > 0)
                     {
+                        Console.Clear();
                         Console.WriteLine($"You entered {number}.");
                         return number;
                     }
+                    Console.Clear();
                     Console.WriteLine($"You selected an infinite amount of questions.");
                     return 0;
                 }
                 else if (numberOfQuestions == string.Empty)
                 {
+                    Console.Clear();
                     Console.WriteLine($"You selected an infinite amount of questions.");
                     return 0;
                 }
@@ -211,21 +220,25 @@ namespace MathGame.SadePauw
                 switch (difficulty)
                 {
                     case "1":
-                        Console.WriteLine("You selected Easy.");
+                        Console.Clear();
+                        Console.WriteLine("You selected Easy.\n");
                         return 1;
                     case "2":
-                        Console.WriteLine("You selected Medium.");
+                        Console.Clear();
+                        Console.WriteLine("You selected Medium.\n");
                         return 2;
                     case "3":
-                        Console.WriteLine("You selected Hard.");
+                        Console.Clear();
+                        Console.WriteLine("You selected Hard.\n");
                         return 3;
                     default:
-                        Console.WriteLine("Invalid answer.");
+                        Console.Clear();
+                        Console.WriteLine("Invalid answer.\n");
                         continue;
                 }
             }
         }
-        private static void EndGame(string name, DateTime date, DateTime startTime, int currentStreak, int difficulty)
+        private static void EndGame(string name, DateTime date, DateTime startTime, int currentStreak, int difficulty, string mode)
         {
             var elapsed = TimeElapsed(startTime);
             string dif;
@@ -244,11 +257,16 @@ namespace MathGame.SadePauw
                     dif = "Invalid";
                     break;
             }
-            Console.WriteLine($"You made it to {currentStreak}. Time: {elapsed} !");
+            Console.WriteLine($"You made it to {currentStreak}. Time: {elapsed}!\n");
             History.SetHistory($"{date}, {name}, " +
-                               $"Mode: Subtract, {currentStreak}, " +
+                               $"Mode: {mode}, {currentStreak}, " +
                                $"Difficulty {dif}, " +
                                $"Time: {elapsed}");
+        }
+        static bool IsValidInput(string input)
+        {
+            string validCharacters = "ASMDRHQ";
+            return validCharacters.Contains(input);
         }
     }
 }

@@ -95,9 +95,11 @@ namespace MathGame.SadePauw
         {
             if (answer == result)
             {
+                Console.Clear();
                 Console.WriteLine($"Congratulations! {answer} was the correct!");
                 return true;
             }
+            Console.Clear();
             Console.WriteLine("Too bad!");
             return false;
         }
